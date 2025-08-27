@@ -1,0 +1,128 @@
+{
+	"info": {
+		"_postman_id": "b5eab258-99b1-41a1-9e9b-671679d7d102",
+		"name": "Time4IT - API",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "15398770",
+		"_collection_link": "https://getinwebdev.postman.co/workspace/Getinweb~42d5b102-c4c5-46da-8d38-b4cb0ad5ec31/collection/15398770-b5eab258-99b1-41a1-9e9b-671679d7d102?action=share&source=collection_link&creator=15398770"
+	},
+	"item": [
+		{
+			"name": "http://localhost:4000/api/orders",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"// Generate HS256 JWT with { tenantId }",
+							"const header = { alg: \"HS256\", typ: \"JWT\" };",
+							"const payload = { tenantId: pm.environment.get(\"tenantId\") };",
+							"",
+							"function b64url(obj) {",
+							"  const wordArray = CryptoJS.enc.Utf8.parse(JSON.stringify(obj));",
+							"  const base64 = CryptoJS.enc.Base64.stringify(wordArray);",
+							"  return base64.replace(/=+$/,'').replace(/\\+/g,'-').replace(/\\//g,'_');",
+							"}",
+							"",
+							"const unsigned = b64url(header) + \".\" + b64url(payload);",
+							"const sig = CryptoJS.HmacSHA256(unsigned, pm.environment.get(\"JWT_SECRET\"));",
+							"const sigb64 = CryptoJS.enc.Base64.stringify(sig).replace(/=+$/,'').replace(/\\+/g,'-').replace(/\\//g,'_');",
+							"pm.environment.set(\"jwt\", unsigned + \".\" + sigb64);"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{base_url}}/api/orders?tenantId=t-123&buyerEmail=alice@example.com&page=1&limit=10",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"api",
+						"orders"
+					],
+					"query": [
+						{
+							"key": "tenantId",
+							"value": "t-123"
+						},
+						{
+							"key": "buyerEmail",
+							"value": "alice@example.com"
+						},
+						{
+							"key": "page",
+							"value": "1"
+						},
+						{
+							"key": "limit",
+							"value": "10"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "http://localhost:4000/api/orders Copy",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"requestId\": \"r3\",\n  \"tenantId\": \"t-123\",\n  \"buyer\": { \"email\": \"alice@example.com\", \"name\": \"Alice\" },\n  \"items\": [{ \"sku\": \"SKU-1\", \"qty\": 2, \"price\": 49.99 }],\n  \"attachment\": {\n    \"filename\": \"invoice.pdf\",\n    \"contentType\": \"application/pdf\",\n    \"size\": 123456,\n    \"storageKey\": \"tenants/t-123/orders/001/invoice.pdf\"\n  }\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{base_url}}/api/orders",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"api",
+						"orders"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "base_url",
+			"value": "http://localhost:3000",
+			"type": "string"
+		}
+	]
+}

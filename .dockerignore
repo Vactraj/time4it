@@ -1,0 +1,19 @@
+# Ogólne
+.git
+.gitignore
+node_modules
+npm-debug.log*
+yarn.lock
+pnpm-lock.yaml
+test-ws
+README.md
+
+# Build artefakty
+dist
+.next
+.out
+coverage
+
+# OS/IDE
+.DS_Store
+.vscode
